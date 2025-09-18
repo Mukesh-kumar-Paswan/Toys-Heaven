@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const port = 8080;
 const Mongo_URL = "mongodb://127.0.0.1:27017/ToyHeaven";
+exports.Mongo_URL = Mongo_URL;
 const listing = require("./models/listing.js");
 
 

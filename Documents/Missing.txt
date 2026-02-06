@@ -1,0 +1,24 @@
+Feature 1:
+✅ What that does:
+
+ESLint scans all files in the current folder (.)
+
+Checks for syntax errors
+
+Coding style issues
+
+Bad practices
+
+Potential bugs
+
+⚠️ This only works if ESLint is installed and configured.
+
+You’d need:
+
+npm install --save-dev eslint
+npx eslint --init
+
+
+Until you do that, don’t worry about lint yet — it’s optional for beginners.
+
+Feature 2:

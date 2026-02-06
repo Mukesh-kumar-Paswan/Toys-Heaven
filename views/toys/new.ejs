@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toy-Heaven</title>
+  </head>
+  <body>
+    <h1>Create a New Toy</h1>
+    <form action="/toys" method="POST">
+      <input type="text" name="toy[title]" placeholder="Enter Title" /><br />
+      <textarea
+        name="toy[description]"
+        id="description"
+        placeholder="Enter Description"
+      ></textarea
+      ><br />
+      <input type="text" name="toy[image]" placeholder="Enter image" /><br />
+      <input
+        type="number"
+        name="toy[price]"
+        placeholder="Enter price"
+        min="1"
+      /><br />
+      <select name="toy[category]" required>
+        <option value="Educational">Educational</option>
+        <option value="Action">Action</option>
+        <option value="Puzzle">Puzzle</option>
+        <option value="Soft Toy">Soft Toy</option>
+        <option value="Vehicle">Vehicle</option>
+        <option value="Others" selected>Others</option>
+      </select>
+      <br />
+      <button>Create</button>
+    </form>
+  </body>
+</html>

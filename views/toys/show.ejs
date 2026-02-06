@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toy-Heaven</title>
+  </head>
+  <body>
+    <h1>Welcome <%= toy.title %></h1>
+    <ul>
+      <li><%= toy.description %></li>
+      <li>&#8377;<%= toy.price.toLocaleString("en-IN") %></li>
+      <li><%= toy.category %></li>
+    </ul>
+    <form action="/toys/<%= toy._id %>/edit" method="GET">
+      <button>EDIT</button>
+    </form>
+    <br />
+    <form action="/toys/<%= toy._id %>?_method=DELETE" method="POST">
+      <button>Delete</button>
+    </form>
+  </body>
+</html>

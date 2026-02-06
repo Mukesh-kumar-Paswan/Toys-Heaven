@@ -1,0 +1,14 @@
+toy selling website
+
+features
+main page of attraction 
+sign up sign in 
+
+
+working of website
+selling page = where whole toys will be listed available for purchase
+toy sellected = this page will have toys related details 
+edit toy = where we can edit toys related information
+delete toy = remove toys for selling 
+purchase page = actually buying the toy 
+create toy = adding toys to sell 

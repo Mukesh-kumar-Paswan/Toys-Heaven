@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toy-Heaven</title>
+</head>
+<body>
+    <h1>All Toys Collection</h1>
+    <form action="/toys/new" method="GET">
+        <button>Create New Toy</button>
+    </form>
+    <ul>
+        <% for(toy of allToys) { %>
+            <li><a href="/toys/<%= toy._id %>"><%= toy.title %></a></li>
+       <% } %>
+    </ul>
+</body>
+</html>

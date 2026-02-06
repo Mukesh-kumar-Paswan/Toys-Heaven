@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toy-Heaven</title>
+  </head>
+  <body>
+    <h1>Edit Toy</h1>
+    <form action="/toys/<%= toy._id %>?_method=PUT" method="POST">
+      <input type="text" name="toy[title]" value="<%= toy.title %>" /><br />
+      <textarea
+        name="toy[description]"
+        id="description"
+      ><%= toy.description %></textarea
+      ><br />
+      <input type="text" name="toy[image]" value="<%= toy.image %>" /><br />
+      <input
+        type="number"
+        name="toy[price]"
+        value="<%= toy.price %>"
+        min="1"
+      /><br />
+      <% const categories = ["Educational","Action","Puzzle","Soft Toy","Vehicle","Others"]; %>
+
+        <select name="toy[category]" required>
+            <% categories.forEach(cat => { %>
+                <option value="<%= cat %>" 
+                    <%= toy.category === cat ? "selected" : "" %>><%= cat %>
+                </option>
+            <% }); %>
+        </select>
+
+      <br />
+      <button>EDIT</button>
+    </form>
+  </body>
+</html>

@@ -6,7 +6,6 @@ const toySchema = new Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 3,
   },
   description: {
     type: String,

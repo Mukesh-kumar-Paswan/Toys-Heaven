@@ -1,19 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toy-Heaven</title>
-</head>
-<body>
-    <h1>All Toys Collection</h1>
-    <form action="/toys/new" method="GET">
-        <button>Create New Toy</button>
-    </form>
-    <ul>
-        <% for(toy of allToys) { %>
-            <li><a href="/toys/<%= toy._id %>"><%= toy.title %></a></li>
-       <% } %>
-    </ul>
-</body>
-</html>
+<% layout("./layouts/boilerplate.ejs") -%>
+
+<h1 class="title">All Toys Collection</h1>
+
+<a href="/toys/new" class="create-toy-btn" title="Create New Toy">
+  <i class="fa-solid fa-plus"></i>
+</a>
+
+<div class="plays">
+  <% for (let toy of allToys) { %>
+    <div class="card">
+      <a href="/toys/<%= toy._id %>">
+        <div class="card-img">
+          <img src="<%= toy.image %>" alt="Toys Image" />
+        </div>
+        <div class="card-info">
+          <h3><%= toy.title %></h3>
+          <div class="price">
+             <span>&#8377;</span><%= toy.price.toLocaleString("en-IN") %>
+          </div>
+        </div>
+      </a>
+      <button class="add-cart-btn">Add To Cart</button>
+    </div>
+  <% } %>
+</div>

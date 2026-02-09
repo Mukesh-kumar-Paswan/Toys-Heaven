@@ -1,23 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Toy-Heaven</title>
-  </head>
-  <body>
-    <h1>Welcome <%= toy.title %></h1>
-    <ul>
-      <li><%= toy.description %></li>
-      <li>&#8377;<%= toy.price.toLocaleString("en-IN") %></li>
-      <li><%= toy.category %></li>
-    </ul>
-    <form action="/toys/<%= toy._id %>/edit" method="GET">
-      <button>EDIT</button>
-    </form>
-    <br />
-    <form action="/toys/<%= toy._id %>?_method=DELETE" method="POST">
-      <button>Delete</button>
-    </form>
-  </body>
-</html>
+<% layout("./layouts/boilerplate.ejs") -%>
+
+<div class="show-container">
+  <div class="show-img-container">
+    <img src="<%= toy.image %>" alt="<%= toy.title %>" />
+  </div>
+
+  <div class="show-details">
+    <span class="show-category"><%= toy.category %></span>
+    <h1 class="show-title"><%= toy.title %></h1>
+
+    <p class="show-desc"><%= toy.description %></p>
+
+    <div class="show-price">
+      &#8377; <%= toy.price.toLocaleString("en-IN") %>
+    </div>
+
+    <div class="show-actions">
+      <form action="/toys/<%= toy._id %>/edit" method="GET" style="flex: 1">
+        <button class="btn-action btn-edit">
+          <i class="fa-solid fa-pen-to-square"></i> Edit
+        </button>
+      </form>
+
+      <form
+        action="/toys/<%= toy._id %>?_method=DELETE"
+        method="POST"
+        style="flex: 1"
+      >
+        <button class="btn-action btn-delete">
+          <i class="fa-solid fa-trash"></i> Delete
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -33,4 +33,38 @@
       </form>
     </div>
   </div>
+<hr>
+  <div class="review-form">
+    <h4>Leave a review</h4>
+
+    <form action="/toys/<%= toy._id %>/reviews" method="POST">
+      <div>
+        <label for="rating">Rating</label>
+        <input type="range" name="review[rating]" id="rating" min="1" max="5">
+      </div>
+
+      <div>
+        <label for="comment">Comment</label>
+        <textarea name="review[comment]" id="comment" required></textarea>
+      </div>
+
+      <button>Submit</button>
+    </form>
+
+  </div>
+    <hr>
+  <div class="acutal-review">
+      <% for(review of toy.reviews) { %>
+        <div>
+          <ul>
+            <li><%= review.rating %>Stars</li>
+            <li><%= review.comment %></li>
+          </ul>
+          <form action="/toys/<%= toy._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+            <button>Delete</button>
+          </form>
+        </div>
+      <% } %>
+  </div>
+
 </div>

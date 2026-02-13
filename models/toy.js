@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Review = require("./review.js");
 
 const toySchema = new Schema({
   title: {
@@ -27,6 +28,18 @@ const toySchema = new Schema({
     enum: ["Educational", "Action", "Puzzle", "Soft Toy", "Vehicle" , "Others"],
     required: true,
   },
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review",
+    }
+  ]
+});
+
+toySchema.post("findOneAndDelete" , async(toy) => {
+  if(toy) {
+    await Review.deleteMany({ _id: {$in : toy.reviews}});
+  }
 });
 
 const Toy = mongoose.model("Toy" , toySchema);

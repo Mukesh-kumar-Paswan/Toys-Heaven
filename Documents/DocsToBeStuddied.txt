@@ -1,1 +1,3 @@
 Mongoose 
+Joi
+6 rule of thumb for mongoDB schema design

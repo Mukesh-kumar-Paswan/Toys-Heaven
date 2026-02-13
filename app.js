@@ -2,13 +2,14 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Toy = require("./models/toy.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./Utils/wrapAsync.js");
+const toys = require("./Routes/toys.js");
+const reviews = require("./Routes/reviews.js");
 const ExpressError = require("./Utils/ExpressError.js");
-const { toySchema } = require("./Utils/schema.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 // Setting EJS
 app.set("view engine", "ejs");
@@ -20,16 +21,29 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Validation Middleware For Toy
-const validateToy = (req, res, next) => {
-  let { error } = toySchema.validate(req.body);
-
-  if (error) {
-    throw new ExpressError(400, error.details[0].message);
-  } else {
-    next();
-  }
+// Session
+const sessionOption = {
+  secret: "outToySecret",
+  resave: false,
+  saveUninitialized : true,
+  cookie : {
+    expires : Date.now() * 7 * 24 * 60 * 60 * 1000,
+    maxAge : 7 * 24 * 60 * 60 * 1000, 
+    httpOnly : true,
+  },
 };
+
+app.use(session(sessionOption));
+
+// Flash
+app.use(flash());
+
+app.use((req , res , next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+})
+
 
 // Starting the server
 const port = 8080;
@@ -55,88 +69,18 @@ async function main() {
 
 main();
 
-// Index Route
+// Toy Route
+app.use("/toys", toys);
 
-app.get(
-  "/toys",
-  wrapAsync(async (req, res) => {
-    const allToys = await Toy.find({});
-    res.render("toys/index.ejs", { allToys });
-  }),
-);
-
-// New Route
-
-app.get("/toys/new", (req, res) => {
-  res.render("toys/new.ejs");
-});
-
-// Create Route
-
-app.post(
-  "/toys",
-  validateToy,
-  wrapAsync(async (req, res) => {
-    const toy = req.body.toy;
-    const newToy = new Toy(toy);
-    await newToy.save();
-    res.redirect("/toys");
-  }),
-);
-
-// Edit Route
-
-app.get(
-  "/toys/:id/edit",
-  wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const toy = await Toy.findById(id);
-    res.render("toys/edit.ejs", { toy });
-  }),
-);
-
-// Update Route
-
-app.put(
-  "/toys/:id",
-  validateToy ,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const toy = await Toy.findByIdAndUpdate(id, { ...req.body.toy });
-    res.redirect(`/toys/${id}`);
-  }),
-);
-
-// Delete Route
-
-app.delete(
-  "/toys/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    await Toy.findByIdAndDelete(id);
-    res.redirect("/toys");
-  }),
-);
-
-// Show Route
-
-app.get(
-  "/toys/:id",
-  wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const toy = await Toy.findById(id);
-    res.render("toys/show.ejs", { toy });
-  }),
-);
+// Review Route
+app.use("/toys/:id/reviews", reviews);
 
 // Error page
-
-app.get("/error", (req, res) => {
-  throw new ExpressError(404, "Checking for Error.ejs");
+app.use((req, res, next) => {
+  next(new ExpressError(404, "Page Not Found"));
 });
 
 // Error Handling Route
-
 app.use((err, req, res, next) => {
   let { status = 500, message = "some thing went wrong" } = err;
   res.status(status).render("toys/error.ejs", { err: message });

@@ -1,24 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
 const Toy = require("../models/toy.js");
-const { toySchema } = require("../Utils/schema.js");
-
 const wrapAsync = require("../Utils/wrapAsync.js");
-const ExpressError = require("../Utils/ExpressError.js");
-
-
-// Validation Middleware For Toy
-const validateToy = (req, res, next) => {
-  let { error } = toySchema.validate(req.body);
-
-  if (error) {
-    next(new ExpressError(400, error.details[0].message));
-  } else {
-    next();
-  }
-};
-
+const { isLoggedIn, isOwner, validateToy } = require("../Utils/middleware.js");
 
 // Index Route
 
@@ -32,7 +16,7 @@ router.get(
 
 // New Route
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("toys/new.ejs");
 });
 
@@ -40,12 +24,14 @@ router.get("/new", (req, res) => {
 
 router.post(
   "/",
+  isLoggedIn,
   validateToy,
   wrapAsync(async (req, res) => {
     const toy = req.body.toy;
     const newToy = new Toy(toy);
+    newToy.owner = req.user._id;
     await newToy.save();
-    req.flash("success" , "new toy added to market place");
+    req.flash("success", "new toy added to market place");
     res.redirect("/toys");
   }),
 );
@@ -54,13 +40,15 @@ router.post(
 
 router.get(
   "/:id/edit",
+  isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     const toy = await Toy.findById(id);
-    if(!toy) {
-      req.flash("error" , "Toy is not available");
+    if (!toy) {
+      req.flash("error", "Toy is not available");
       res.redirect("/toys");
-    };
+    }
     res.render("toys/edit.ejs", { toy });
   }),
 );
@@ -69,11 +57,13 @@ router.get(
 
 router.put(
   "/:id",
-  validateToy ,
+  isLoggedIn,
+  isOwner,
+  validateToy,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     const toy = await Toy.findByIdAndUpdate(id, { ...req.body.toy });
-    req.flash("success" , "toy updated");
+    req.flash("success", "toy updated");
     res.redirect(`/toys/${id}`);
   }),
 );
@@ -82,10 +72,12 @@ router.put(
 
 router.delete(
   "/:id",
+  isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     await Toy.findByIdAndDelete(id);
-    req.flash("success" , "toy successfully removed from market place");
+    req.flash("success", "toy successfully removed from market place");
     res.redirect("/toys");
   }),
 );
@@ -96,9 +88,16 @@ router.get(
   "/:id",
   wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const toy = await Toy.findById(id).populate("reviews");
-    if(!toy) {
-      req.flash("error" , "Toy is not available");
+    const toy = await Toy.findById(id)
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "author",
+        },
+      })
+      .populate("owner");
+    if (!toy) {
+      req.flash("error", "Toy is not available");
       res.redirect("/toys");
     }
     res.render("toys/show.ejs", { toy });

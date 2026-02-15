@@ -5,11 +5,17 @@ const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const toys = require("./Routes/toys.js");
-const reviews = require("./Routes/reviews.js");
+const toysRouter = require("./Routes/toys.js");
+const reviewsRouter = require("./Routes/reviews.js");
 const ExpressError = require("./Utils/ExpressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const userRouter = require("./Routes/user.js");
+
+// authentication
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 
 // Setting EJS
 app.set("view engine", "ejs");
@@ -23,24 +29,31 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Session
 const sessionOption = {
-  secret: "outToySecret",
+  secret: "ourToySecret",
   resave: false,
   saveUninitialized : true,
   cookie : {
-    expires : Date.now() * 7 * 24 * 60 * 60 * 1000,
+    expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge : 7 * 24 * 60 * 60 * 1000, 
     httpOnly : true,
   },
 };
 
 app.use(session(sessionOption));
-
 // Flash
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use((req , res , next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
   next();
 })
 
@@ -50,10 +63,6 @@ const port = 8080;
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
-});
-
-app.get("/", (req, res) => {
-  res.send(`<h1>Thankyou for visiting. Work in progress :) <h1>`);
 });
 
 // Setting Mongoose Server
@@ -70,10 +79,18 @@ async function main() {
 main();
 
 // Toy Route
-app.use("/toys", toys);
+app.use("/toys", toysRouter);
 
 // Review Route
-app.use("/toys/:id/reviews", reviews);
+app.use("/toys/:id/reviews", reviewsRouter);
+
+// User Route
+app.use("/" , userRouter);
+
+// Home Page
+app.get("/", (req, res) => {
+  res.send(`<h1>Thankyou for visiting. Work in progress :) <h1>`);
+});
 
 // Error page
 app.use((req, res, next) => {

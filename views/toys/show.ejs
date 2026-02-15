@@ -1,6 +1,7 @@
 <% layout("./layouts/boilerplate.ejs") -%>
 
 <div class="show-container">
+  
   <div class="show-img-container">
     <img src="<%= toy.image %>" alt="<%= toy.title %>" />
   </div>
@@ -8,6 +9,7 @@
   <div class="show-details">
     <span class="show-category"><%= toy.category %></span>
     <h1 class="show-title"><%= toy.title %></h1>
+    <p class="owner-tag">Posted by: <i><%= toy.owner.username %></i></p>
 
     <p class="show-desc"><%= toy.description %></p>
 
@@ -15,6 +17,7 @@
       &#8377; <%= toy.price.toLocaleString("en-IN") %>
     </div>
 
+    <% if(currUser && currUser._id.equals(toy.owner._id)) { %>
     <div class="show-actions">
       <form action="/toys/<%= toy._id %>/edit" method="GET" style="flex: 1">
         <button class="btn-action btn-edit">
@@ -32,39 +35,58 @@
         </button>
       </form>
     </div>
+    <% } %>
   </div>
-<hr>
-  <div class="review-form">
-    <h4>Leave a review</h4>
+</div>
 
+<div class="reviews-container">
+  
+  <% if(currUser) { %>
+  <div class="review-form-card">
+    <h3>Leave a Review</h3>
     <form action="/toys/<%= toy._id %>/reviews" method="POST">
-      <div>
-        <label for="rating">Rating</label>
-        <input type="range" name="review[rating]" id="rating" min="1" max="5">
+      
+      <div class="form-group">
+        <label for="rating" class="form-label">Rating (1-5)</label>
+        <input type="range" class="form-range" name="review[rating]" id="rating" min="1" max="5" step="1">
       </div>
 
-      <div>
-        <label for="comment">Comment</label>
-        <textarea name="review[comment]" id="comment" required></textarea>
+      <div class="form-group">
+        <label for="comment" class="form-label">Comment</label>
+        <textarea name="review[comment]" id="comment" class="form-control" rows="3" required></textarea>
       </div>
 
-      <button>Submit</button>
+      <button class="btn-submit">Submit Review</button>
     </form>
-
   </div>
-    <hr>
-  <div class="acutal-review">
-      <% for(review of toy.reviews) { %>
-        <div>
-          <ul>
-            <li><%= review.rating %>Stars</li>
-            <li><%= review.comment %></li>
-          </ul>
-          <form action="/toys/<%= toy._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-            <button>Delete</button>
-          </form>
-        </div>
+  <% } %>
+
+  <hr class="divider">
+
+  <div class="review-list">
+    <h3>Customer Reviews</h3>
+    
+    <% if(toy.reviews.length === 0) { %>
+        <p class="no-reviews">No reviews yet. Be the first!</p>
+    <% } %>
+
+    <% for(review of toy.reviews) { %>
+    <div class="review-card">
+      <div class="review-header">
+        <strong class="review-author">@<%= review.author.username %></strong>
+        <span class="review-stars">
+             <%= review.rating %> <i class="fa-solid fa-star"></i>
+        </span>
+      </div>
+      
+      <p class="review-body"><%= review.comment %></p>
+
+      <% if(currUser && currUser._id.equals(review.author._id)) { %>
+      <form action="/toys/<%= toy._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+        <button class="btn-sm btn-delete">Delete</button>
+      </form>
       <% } %>
+    </div>
+    <% } %>
   </div>
-
 </div>

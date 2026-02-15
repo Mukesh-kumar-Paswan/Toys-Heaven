@@ -33,7 +33,11 @@ const toySchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "Review",
     }
-  ]
+  ],
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 toySchema.post("findOneAndDelete" , async(toy) => {

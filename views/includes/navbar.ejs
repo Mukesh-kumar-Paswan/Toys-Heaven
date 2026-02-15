@@ -1,21 +1,34 @@
-<nav>
-  <div class="icon">
+<nav class="navbar">
+  <div class="logo-container">
     <img
       src="/img/Gemini_Generated_Image_swydapswydapswyd.png"
-      alt="logo image"
+      alt="Toy Heaven Logo"
+      class="logo-img"
     />
   </div>
-  <div class="pages">
-    <a>Education Page</a>
-    <a>Action Page</a>
-    <a>Adventure Page</a>
-    <a>Puzzle Page</a>
-    <a>Soft Toy Page</a>
-    <a>Vehicle Page</a>
-    <a>Others Page</a>
+
+  <div class="nav-links">
+    <a href="/toys?category=Education">Education</a>
+    <a href="/toys?category=Action">Action</a>
+    <a href="/toys?category=Adventure">Adventure</a>
+    <a href="/toys?category=Puzzle">Puzzle</a>
+    <a href="/toys?category=Soft">Soft Toy</a>
+    <a href="/toys?category=Vehicle">Vehicle</a>
+    <a href="/toys?category=Others">Others</a>
   </div>
-  <div class="sign">
-    <a><i class="fa-solid fa-user"></i></a>
-    <a><i class="fa-solid fa-cart-shopping"></i></a>
+
+  <div class="nav-actions">
+    <% if(!currUser) { %>
+      <a href="/signup" class="nav-btn">SignUp</a>
+      <a href="/login" class="nav-btn">Login</a>
+    <% } %>
+    
+    <% if(currUser) { %>
+      <a href="/logout" class="nav-btn logout">Logout</a>
+    <% } %>
+    
+    <a href="#" class="cart-icon">
+        <i class="fa-solid fa-cart-shopping"></i>
+    </a>
   </div>
 </nav>

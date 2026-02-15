@@ -14,9 +14,13 @@ async function main() {
 main();
 
 const seedDB = async () => {
-    await Toy.deleteMany({});
-    await Toy.insertMany(indata.data);
-    console.log("Data was Initialized Successfully");
-}
+  await Toy.deleteMany({});
+  indata.data = indata.data.map((obj) => ({
+    ...obj,
+    owner: "699151db4ece567db1862356",
+  }));
+  await Toy.insertMany(indata.data);
+  console.log("Data was Initialized Successfully");
+};
 
 seedDB();

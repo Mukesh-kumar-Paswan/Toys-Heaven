@@ -1,0 +1,99 @@
+1. Passport
+
+Passport is a Node.js middleware used to handle authentication in Express applications.
+
+✅ What it does:
+
+Helps you log users in and out
+
+Supports many strategies (Google, GitHub, Facebook, local, JWT, etc.)
+
+Doesn’t handle sessions or users directly — it just plugs into Express
+
+🔧 Example usage:
+const passport = require("passport");
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+👤 2. passport-local
+
+This is the local strategy plugin for Passport.
+
+✅ What it does:
+
+Allows users to log in using a username/email and password
+
+Defines how Passport should verify credentials
+
+🔧 Example:
+const LocalStrategy = require("passport-local");
+
+passport.use(new LocalStrategy(User.authenticate()));
+
+
+You typically use this with a User model that can validate username/password (like Mongoose model with .authenticate() method).
+
+🧠 3. passport-local-mongoose
+
+This is a Mongoose plugin that:
+
+Simplifies building user authentication with Passport
+
+Adds methods to your Mongoose User model, like:
+
+.register()
+
+.authenticate()
+
+.serializeUser() / .deserializeUser()
+
+✅ What it does:
+
+Hashes & salts passwords automatically
+
+Adds helper methods to your User schema
+
+Makes Passport setup super easy
+
+🔧 Example:
+const mongoose = require("mongoose");
+const passportLocalMongoose = require("passport-local-mongoose");
+
+const userSchema = new mongoose.Schema({});
+userSchema.plugin(passportLocalMongoose); // adds username, hash, salt
+
+const User = mongoose.model("User", userSchema);
+
+// Later
+User.register(new User({ username: "john" }), "secretpassword");
+
+🔁 Summary Table
+Tool	What It Does	Key Use
+passport	Authentication framework for Express	Base middleware
+passport-local	Local login strategy (username & password)	Login logic
+passport-local-mongoose	Mongoose plugin to simplify user auth	Hashing, helper methods
+🚀 Key Benefits (Together):
+
+With passport + passport-local + passport-local-mongoose, you can:
+
+Quickly set up secure user auth
+
+Avoid writing password hashing code manually
+
+Use clean middleware and Mongoose integration
+
+
+
+route
+// demo program
+// app.get("/demo" , async (req,res) => {
+//   let fake = new User ({
+//     email:"student@gamil.com",
+//     username:"delta-student",
+//   });
+
+//   let registeredUser = await User.register(fake , "iamastudent");
+//   res.send(registeredUser);
+// })
+
